@@ -1,4 +1,4 @@
-// FileName: motelCustomer.js
+// FileName:qap4-project5-javascript-ba.js
 // QAP 4 - JavaScript
 /*
   Motel Customer Information
@@ -12,12 +12,12 @@
 */
 
 // Define a MotelCustomer object
-const motelCustomer = {
+const MotelCustomer = {
   // Main properties
   name: "Brenda Armstrong",
   birthDate: "1979-10-25",
   gender: "Female",
-  roomPreferences: ["king", "non-smoking", "jacuzzi", "wine", "pet-friendly"],
+  roomPreferences: ["King", "Non-smoking", "Jacuzzi", "Wine with Cheese Package", "Pet-friendly"],
   paymentMethod: "Credit Card",
   
   // Sub-object for mailing address
@@ -36,7 +36,7 @@ const motelCustomer = {
     checkOut: "2023-11-07",
   },
 
-  // Function to calculate age
+  // Method to calculate age
   calculateAge: function () {
     const today = new Date();
     const birthYear = new Date(this.birthDate).getFullYear();
@@ -44,30 +44,28 @@ const motelCustomer = {
     return currentYear - birthYear;
   },
 
-  // Function to calculate stay duration
+  // Method to calculate stay duration
   calculateStayDuration: function () {
     const oneDay = 24 * 60 * 60 * 1000;
     const checkInDate = new Date(this.checkInAndOutDates.checkIn);
     const checkOutDate = new Date(this.checkInAndOutDates.checkOut);
     return Math.round(Math.abs((checkInDate - checkOutDate) / oneDay));
   },
-
-  // Method to generate a customer description as a template literal string
-  generateCustomerDescription: function () {
-    return `
-      <p><strong>Name:</strong> ${this.name}</p>
-      <p><strong>Address:</strong> ${this.mailingAddress.streetAddress}, ${this.mailingAddress.city}, ${this.mailingAddress.province}, ${this.mailingAddress.postalCode}</p>
-      <p><strong>Age:</strong> ${this.calculateAge()}</p>
-      <p><strong>Gender:</strong> ${this.gender}</p>
-      <p><strong>Room Preferences:</strong> ${this.roomPreferences.join(', ')}</p>
-      <p><strong>Payment Method:</strong> ${this.paymentMethod}</p>
-      <p><strong>Phone Number:</strong> ${this.phoneNumber}</p>
-      <p><strong>Check-in Date:</strong> ${this.checkInAndOutDates.checkIn}</p>
-      <p><strong>Check-out Date:</strong> ${this.checkInAndOutDates.checkOut}</p>
-      <p><strong>Stay Duration:</strong> ${this.calculateStayDuration()} days</p>
-    `;
-  },
 };
 
-const customerDescription = motelCustomer.generateCustomerDescription();
-console.log(customerDescription);
+// Create a template literal string
+const html = `
+  Name: ${MotelCustomer.name}
+  Address: ${MotelCustomer.mailingAddress.streetAddress}, ${MotelCustomer.mailingAddress.city}, ${MotelCustomer.mailingAddress.province}, ${MotelCustomer.mailingAddress.postalCode}
+  Age: ${MotelCustomer.calculateAge()}
+  Gender: ${MotelCustomer.gender}
+  Room Preferences: ${MotelCustomer.roomPreferences.join(', ')}
+  Payment Method: ${MotelCustomer.paymentMethod}
+  Phone Number: ${MotelCustomer.phoneNumber}
+  Check-in Date: ${MotelCustomer.checkInAndOutDates.checkIn}
+  Check-out Date: ${MotelCustomer.checkInAndOutDates.checkOut}
+  Stay Duration: ${MotelCustomer.calculateStayDuration()} days
+`;
+
+// Log the HTML to the console
+console.log(html);
