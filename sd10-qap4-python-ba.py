@@ -59,14 +59,17 @@ def get_first_monthly_payment_date(invoice_date):
 
 # Function to calculate the insurance premium
 def calculate_insurance_premium(num_cars, extra_liability, glass_coverage, loaner_car):
+    basic_premium_first_car = BASIC_PREMIUM
+    discount_for_additional_cars = (num_cars - 1) * DISCOUNT_FOR_ADDITIONAL_CARS
+    basic_premium_additional_cars = BASIC_PREMIUM - discount_for_additional_cars
+    total_premium = basic_premium_first_car + (num_cars - 1) * basic_premium_additional_cars
     total_cost_extra_coverage = (
         num_cars * (COST_EXTRA_LIABILITY_COVERAGE * extra_liability +
                    COST_GLASS_COVERAGE * glass_coverage +
                    COST_LOANER_CAR_COVERAGE * loaner_car)
     )
-    discount = (num_cars - 1) * DISCOUNT_FOR_ADDITIONAL_CARS
-    total_premium = BASIC_PREMIUM * (1 - discount) + total_cost_extra_coverage
-    return total_premium
+    total_premium += total_cost_extra_coverage
+    return total_premium, basic_premium_first_car, discount_for_additional_cars
 
 # Function to calculate HST
 def calculate_hst(total_premium):
@@ -128,13 +131,21 @@ def display_receipt(client_info, insurance_info, payment_info, claims):
 
     # Coverage Information
     print("Coverage Information:")
-    print(f'{"Extra Liability Price:":<40}${insurance_info["ex_liability_cost"]:.2f}')
-    print(f'{"Glass Coverage Price:":<40}${insurance_info["glass_cov_cost"]:.2f}')
-    print(f'{"Loaner Vehicle Payment:":<40}${insurance_info["loan_cov_cost"]:.2f}')
+    print(f'{"Extra Liability Coverage:":<40}${insurance_info["ex_liability_cost"]:.2f}')
+    print(f'{"Glass Coverage:":<40}${insurance_info["glass_cov_cost"]:.2f}')
+    print(f'{"Loaner Car Coverage:":<40}${insurance_info["loan_cov_cost"]:.2f}')
     print()
 
     # Premium Breakdown
     print("Premium Breakdown:")
+    print(f'{"Basic Premium:":<40}${BASIC_PREMIUM:.2f}')
+    print(f'{"Additional Vehicle Premium:":<40}${insurance_info["additional_vehicle_premium"]:.2f}')
+
+    # Additional Coverage Costs
+    print(f'{"Extra Liability Coverage Cost:":<40}${insurance_info["ex_liability_cost"]:.2f}')
+    print(f'{"Glass Coverage Cost:":<40}${insurance_info["glass_cov_cost"]:.2f}')
+    print(f'{"Loaner Car Coverage Cost:":<40}${insurance_info["loan_cov_cost"]:.2f}')
+
     print(f'{"Policy Premium:":<40}${insurance_info["total_premium"]:.2f}')
     print(f'{"HST (15%):":<40}${insurance_info["hst"]:.2f}')
     print(f'{"Total Cost:":<40}${insurance_info["total_cost"]:.2f}')
@@ -154,6 +165,7 @@ def display_receipt(client_info, insurance_info, payment_info, claims):
     for i, (claim_date, claim_amount) in enumerate(claims, start=1):
         print(f'{i}. {claim_date:<12} {claim_amount:,.2f}')
     print("-" * 40)
+
 
 # Function to get client information
 def get_client_info():
