@@ -83,6 +83,11 @@ def calculate_monthly_payment(total_cost, down_payment=0):
 
 def add_claim():
     while True:
+        
+        print()
+        print("-" * 40)
+        print("Enter Claim Information:")
+        
         add_claim_option = input("Do you want to add a claim? (Y or N): ").upper()
         if add_claim_option == "Y":
             while True:
@@ -110,7 +115,7 @@ def display_receipt(client_info, insurance_info, payment_info, claims):
     print("The One Stop Insurance Company")
     print(f'Policy No:  #{insurance_info["invoice_num"]}')
     print(f'Invoice Date:  {datetime.today().strftime("%Y-%m-%d")}')
-    print("-" * 60)
+    print("-" * 78)
 
     # Policy Holder Information
     print(f'Policy Holder: {title_case(client_info["fname"])} {title_case(client_info["lname"])}')
@@ -127,56 +132,54 @@ def display_receipt(client_info, insurance_info, payment_info, claims):
     print(f'Loaner Car Coverage: {convert_yn(insurance_info["loaner_car"])}')
     print()
 
-    # Coverage Information
-    print("Coverage Information:")
-    print(f'{"Extra Liability Coverage:":<40}${insurance_info["ex_liability_cost"]:.2f}')
-    print(f'{"Glass Coverage:":<40}${insurance_info["glass_cov_cost"]:.2f}')
-    print(f'{"Loaner Car Coverage:":<40}${insurance_info["loan_cov_cost"]:.2f}')
-    print()
-
     # Premium Breakdown
     print("Premium Breakdown:")
     print(f'{"Basic Premium:":<40}${BASIC_PREMIUM:.2f}')
     print(f'{"Additional Vehicle Premium:":<40}${insurance_info["additional_vehicle_premium"]:.2f}')
-
-    # Additional Coverage Costs
+    print("-" * 48)
+    print("Cost of Coverage:")
     print(f'{"Extra Liability Coverage Cost:":<40}${insurance_info["ex_liability_cost"]:.2f}')
     print(f'{"Glass Coverage Cost:":<40}${insurance_info["glass_cov_cost"]:.2f}')
     print(f'{"Loaner Car Coverage Cost:":<40}${insurance_info["loan_cov_cost"]:.2f}')
-
+    print("-" * 48)
     print(f'{"Policy Premium:":<40}${insurance_info["total_premium"]:.2f}')
     print(f'{"HST (15%):":<40}${insurance_info["hst"]:.2f}')
+    print
     print(f'{"Total Cost:":<40}${insurance_info["total_cost"]:.2f}')
+    print("-" * 48)
     print(f'{"Down Payment:":<40}${payment_info["down_payment"]:.2f}')
     print(f'{"Processing Fee:":<40}${PROCESSING_FEE:.2f}')
+    print("-" * 48)
     print(f'{"Monthly Payment:":<40}${payment_info["monthly_payment"]:.2f}')
-    print()
-
+      
     # First Monthly Payment Date
-    print("First Monthly Payment Date: " + f'{get_first_monthly_payment_date(payment_info["invoice_date"])}')
-    print()
-
+    print(f'{"First Monthly Payment Date:":<39} {get_first_monthly_payment_date(payment_info["invoice_date"])}')
+    print("-" * 48)
+    
     # Claims Information
     print("Previous Claim Information:")
     print(f'{"Claim #":<8}{"Claim Date":<15}{"Amount":<15}')
-    print("-" * 40)
+    print("-" * 48)
     for i, (claim_date, claim_amount) in enumerate(claims, start=1):
-        print(f'{i}. {claim_date:<12} {claim_amount:,.2f}')
-    print("-" * 40)
-
-
+        print(f'{i}. {claim_date:<15} {" " * 7} {claim_amount:>15,.2f}')
+    print("-" * 48)
+    print()
+    
 # Function to get client information
 def get_client_info():
+    print()
     print("-" * 40)
     print("Welcome to The One Stop Insurance Company")
     print("_" * 40)
-    print("Enter Client Information:")
+    print()
+    print("Enter Policy Holder Information:")
+    print()
     fname = input("First Name: ").title()
     lname = input("Last Name: ").title()
     address = input("Address: ").title()
     city = input("City: ").title()
     province_list = ["NL", "PE", "NS", "NB", "QC", "ON", "MB", "SK", "AB", "BC"]
-    province = input("Province (e.g. ON): ").upper()
+    province = input("Province (2-Letter Abbreviation): ").upper()
     while province not in province_list:
         print("Invalid province. Please enter a valid 2-letter abbreviation.")
         province = input("Province: ").upper()
@@ -195,18 +198,20 @@ def get_client_info():
 # Function to get insurance information
 def get_insurance_info():
     print()
+    print("-" * 40)
     print("Enter Insurance Information:")
+    print()
     global NEXT_POLICY_NUMBER
     num_cars = int(input("Number of Cars Being Insured: "))
     
     # Validate extra liability input
-    extra_liability = 1 if validate_yn(input("Extra Liability Coverage? (Y or N): ")) == 'Y' else 0
+    extra_liability = 1 if validate_yn(input("Add Extra Liability Coverage for $1,000,000.00? (Y or N): ")) == 'Y' else 0
     
     # Validate glass coverage input
-    glass_coverage = 1 if validate_yn(input("Glass Coverage? (Y or N): ")) == 'Y' else 0
+    glass_coverage = 1 if validate_yn(input("Add Glass Coverage? (Y or N): ")) == 'Y' else 0
     
     # Validate loaner car input
-    loaner_car = 1 if validate_yn(input("Loaner Car Coverage? (Y or N): ")) == 'Y' else 0
+    loaner_car = 1 if validate_yn(input("Add Loaner Car Coverage? (Y or N): ")) == 'Y' else 0
 
     total_premium = calculate_insurance_premium(
         num_cars,
@@ -240,7 +245,9 @@ def get_insurance_info():
 # Function to get payment information
 def get_payment_info(total_cost):
     print()
+    print("-" * 40) 
     print("Enter Payment Information:")
+    print()
     payment_option_list = ["Full", "Monthly", "Down Pay"]
     payment_option = input("Payment Option (Full, Monthly, or Down Pay): ").title()
     while payment_option not in payment_option_list:
