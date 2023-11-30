@@ -4,9 +4,9 @@ Project 1 is a Python Insurance Premium Calculator program. This is a Python pro
 
 ## Author
 
-Brenda Armstrong: 
-Keyin College Full Stack Software Development Student SD10
-Connect with me on Linkedin: https://www.linkedin.com/in/brendaleearmstrong
+Brenda Armstrong
+- Keyin College Full Stack Software Development Student SD10
+- Connect with me on Linkedin: https://www.linkedin.com/in/brendaleearmstrong
 
 ## Version
 
