@@ -6,6 +6,7 @@
 # Note: This program calculates insurance premiums based on the number of cars insured, extra liability coverage,
 #       glass coverage, and loaner car coverage. It also calculates the monthly payment based on the payment method
 #       and down payment. The program also displays the receipt and previous claims.
+import dis
 import re
 from datetime import datetime, timedelta
 
@@ -63,7 +64,7 @@ def calculate_insurance_premium(num_cars, extra_liability, glass_coverage, loane
     discount_for_additional_cars = (num_cars - 1) * DISCOUNT_FOR_ADDITIONAL_CARS
     basic_premium_additional_cars = BASIC_PREMIUM - discount_for_additional_cars
     total_premium = basic_premium_first_car + (num_cars - 1) * basic_premium_additional_cars
-    total_cost_extra_coverage = num_cars * (COST_EXTRA_LIABILITY_COVERAGE * extra_liability + COST_GLASS_COVERAGE * glass_coverage + COST_LOANER_CAR_COVERAGE * loaner_car)
+    total_cost_extra_coverage = num_cars * (COST_EXTRA_LIABILITY_COVERAGE * extra_liability) + (COST_GLASS_COVERAGE * glass_coverage) + (COST_LOANER_CAR_COVERAGE * loaner_car)
     
     total_premium = total_premium+total_cost_extra_coverage
     return total_premium
@@ -205,7 +206,7 @@ def get_insurance_info():
     num_cars = int(input("Number of Cars Being Insured: "))
     
     # Validate extra liability input
-    extra_liability = 1 if validate_yn(input("Add Extra Liability Coverage for $1,000,000.00? (Y or N): ")) == 'Y' else 0
+    extra_liability = 1 if validate_yn(input("Add Extra Liability Coverage for $1,000,000? (Y or N): ")) == 'Y' else 0
     
     # Validate glass coverage input
     glass_coverage = 1 if validate_yn(input("Add Glass Coverage? (Y or N): ")) == 'Y' else 0
@@ -236,9 +237,9 @@ def get_insurance_info():
         "loan_cov_cost": num_cars * COST_LOANER_CAR_COVERAGE,
         "hst": hst,
         "total_cost": total_cost,
-        "additional_vehicle_premium" : 39.00
+        "additional_vehicle_premium": (num_cars - 1) * 651.75
     }
-
+    
     NEXT_POLICY_NUMBER += 1
     return insurance_info
 
