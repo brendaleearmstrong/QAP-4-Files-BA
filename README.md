@@ -1,7 +1,6 @@
 ## QAP 4 - Project 2 - Create a Github Repository and add a Readme file outlining the Python project.
 
-Python Program - Insurance Premium Calculator
-This is a Python program that calculates insurance premiums based on the number of cars insured, extra liability coverage, glass coverage, and loaner car coverage. It also calculates the monthly payment based on the payment method and down payment. The program also displays the receipt and previous claims.
+Project 1 is a Python Insurance Premium Calculator program. This is a Python program that calculates insurance premiums based on the number of cars insured, extra liability coverage, glass coverage, and loaner car coverage. It also calculates the monthly payment based on the payment method and down payment. The program also displays the receipt and previous claims.
 
 ## Author
 
