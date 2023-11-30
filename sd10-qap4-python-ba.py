@@ -63,17 +63,15 @@ def calculate_insurance_premium(num_cars, extra_liability, glass_coverage, loane
     discount_for_additional_cars = (num_cars - 1) * DISCOUNT_FOR_ADDITIONAL_CARS
     basic_premium_additional_cars = BASIC_PREMIUM - discount_for_additional_cars
     total_premium = basic_premium_first_car + (num_cars - 1) * basic_premium_additional_cars
-    total_cost_extra_coverage = (
-        num_cars * (COST_EXTRA_LIABILITY_COVERAGE * extra_liability +
-                   COST_GLASS_COVERAGE * glass_coverage +
-                   COST_LOANER_CAR_COVERAGE * loaner_car)
-    )
-    total_premium += total_cost_extra_coverage
-    return total_premium, basic_premium_first_car, discount_for_additional_cars
+    total_cost_extra_coverage = num_cars * (COST_EXTRA_LIABILITY_COVERAGE * extra_liability + COST_GLASS_COVERAGE * glass_coverage + COST_LOANER_CAR_COVERAGE * loaner_car)
+    
+    total_premium = total_premium+total_cost_extra_coverage
+    return total_premium
 
 # Function to calculate HST
 def calculate_hst(total_premium):
-    return total_premium * HST_RATE
+    total_premium = total_premium * HST_RATE
+    return total_premium
 
 # Function to calculate total cost
 def calculate_total_cost(total_premium, hst):
@@ -232,7 +230,8 @@ def get_insurance_info():
         "glass_cov_cost": num_cars * COST_GLASS_COVERAGE,
         "loan_cov_cost": num_cars * COST_LOANER_CAR_COVERAGE,
         "hst": hst,
-        "total_cost": total_cost
+        "total_cost": total_cost,
+        "additional_vehicle_premium" : 39.00
     }
 
     NEXT_POLICY_NUMBER += 1
@@ -267,7 +266,6 @@ def get_payment_info(total_cost):
 # Main function
 def main():
     global claims
-
     while True:
         client_info = get_client_info()
         insurance_info = get_insurance_info()
@@ -275,7 +273,7 @@ def main():
             insurance_info["num_cars"],
             insurance_info["extra_liability"],
             insurance_info["glass_coverage"],
-            insurance_info["loaner_car"]
+            insurance_info["loaner_car"],
         )
         hst = calculate_hst(total_premium)
         total_cost = calculate_total_cost(total_premium, hst)
