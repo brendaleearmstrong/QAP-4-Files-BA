@@ -6,7 +6,6 @@
 # Note: This program calculates insurance premiums based on the number of cars insured, extra liability coverage,
 #       glass coverage, and loaner car coverage. It also calculates the monthly payment based on the payment method
 #       and down payment. The program also displays the receipt and previous claims.
-
 import re
 from datetime import datetime, timedelta
 
@@ -46,16 +45,16 @@ def validate_yn(value):
 
 # Function to convert Y/N to Yes/No in uppercase
 def convert_yn(value):
-    return "Yes" if value == "Y" else "No"
+    return "Yes" if value == "Y" or "y" else "No"
 
 # Function to convert a string to title case
 def title_case(s):
     return ' '.join(word.capitalize() for word in s.split())
 
 # Function to get the first monthly payment date
-def get_first_monthly_payment_date():
-    current_date = datetime.today()
-    next_month_date = current_date + timedelta(days=30)
+def get_first_monthly_payment_date(invoice_date):
+    invoice_date_obj = datetime.strptime(invoice_date, "%Y-%m-%d")
+    next_month_date = invoice_date_obj.replace(day=1) + timedelta(days=30)
     return next_month_date.strftime('%Y-%m-%d')
 
 # Function to calculate the insurance premium
@@ -95,7 +94,7 @@ def add_claim():
                         print("Claim date cannot be in the future. Please enter a valid date.")
                     else:
                         claim_amount = float(input("Enter the claim amount: $"))
-                        claims.extend([claim_date, claim_amount])
+                        claims.append((claim_date, claim_amount))
                         break  # Exit the inner loop if the date is valid
                 except ValueError:
                     print("Invalid date format. Please enter the date in YYYY-MM-DD format.")
@@ -107,9 +106,10 @@ def add_claim():
 # Function to display the receipt
 def display_receipt(client_info, insurance_info, payment_info, claims):
     print("-" * 78)
-    print("The One Stop Insurance Company".rjust(40) + f'{"Invoice Date:":<20} {datetime.today().strftime("%Y-%m-%d")}')
-    print("Car Insurance Policy Invoice".rjust(40) + f'{"Receipt No:":<20} #{insurance_info["invoice_num"]}')
-    print()
+    print("The One Stop Insurance Company")
+    print(f'Policy No:  #{insurance_info["invoice_num"]}')
+    print(f'Invoice Date:  {datetime.today().strftime("%Y-%m-%d")}')
+    print("-" * 60)
 
     # Policy Holder Information
     print(f'Policy Holder: {title_case(client_info["fname"])} {title_case(client_info["lname"])}')
@@ -121,9 +121,9 @@ def display_receipt(client_info, insurance_info, payment_info, claims):
     # Coverage Inclusions
     print("Coverage Inclusions:")
     print(f'Number of Cars: {insurance_info["num_cars"]}')
-    print(f'Extra Liability: {validate_yn(insurance_info["extra_liability"])}')
-    print(f'Glass Coverage: {validate_yn(insurance_info["glass_coverage"])}')
-    print(f'Loaner Car Coverage: {validate_yn(insurance_info["loaner_car"])}')
+    print(f'Extra Liability: {convert_yn(insurance_info["extra_liability"])}')
+    print(f'Glass Coverage: {convert_yn(insurance_info["glass_coverage"])}')
+    print(f'Loaner Car Coverage: {convert_yn(insurance_info["loaner_car"])}')
     print()
 
     # Coverage Information
@@ -144,15 +144,15 @@ def display_receipt(client_info, insurance_info, payment_info, claims):
     print()
 
     # First Monthly Payment Date
-    print("First Monthly Payment Date: " + f'{get_first_monthly_payment_date()}')
+    print("First Monthly Payment Date: " + f'{get_first_monthly_payment_date(payment_info["invoice_date"])}')
     print()
 
     # Claims Information
     print("Previous Claim Information:")
-    print(f'{"Claim #":<12}{"Claim Date":<15}{"Amount":<15}')
+    print(f'{"Claim #":<8}{"Claim Date":<15}{"Amount":<15}')
     print("-" * 40)
     for i, (claim_date, claim_amount) in enumerate(claims, start=1):
-        print(f'{i}. {claim_date:<15}${claim_amount:,.2f}')
+        print(f'{i}. {claim_date:<12} {claim_amount:,.2f}')
     print("-" * 40)
 
 # Function to get client information
@@ -169,7 +169,7 @@ def get_client_info():
     province = input("Province (e.g. ON): ").upper()
     while province not in province_list:
         print("Invalid province. Please enter a valid 2-letter abbreviation.")
-        province = input("Province): ").upper()
+        province = input("Province: ").upper()
     postal_code = validate_postal_code(input("Postal Code (A#A #A#): "))
     phone_number = validate_phone_number(input("Phone Number (###-###-####): "))
     return {
@@ -271,7 +271,9 @@ def main():
 
         add_claim()
 
-        payment_info["invoice_date"] = get_first_monthly_payment_date()
+        payment_info["invoice_date"] = datetime.today().strftime("%Y-%m-%d")
+        payment_info["first_monthly_payment_date"] = get_first_monthly_payment_date(payment_info["invoice_date"])
+
         display_receipt(client_info, insurance_info, payment_info, claims)
 
         another_client = validate_yn(input("Would you like to add another client? (Y or N): "))
