@@ -48,6 +48,10 @@ def validate_yn(value):
 def convert_yn(value):
     return "Yes" if value == "Y" else "No"
 
+# Function to convert a string to title case
+def title_case(s):
+    return ' '.join(word.capitalize() for word in s.split())
+
 # Function to get the first monthly payment date
 def get_first_monthly_payment_date():
     current_date = datetime.today()
@@ -100,36 +104,37 @@ def add_claim():
         else:
             print("Invalid option. Please enter Y or N.")
 
+# Function to display the receipt
 def display_receipt(client_info, insurance_info, payment_info, claims):
     print("-" * 78)
-    print("The One Stop Insurance Company".rjust(40) + f'{"Invoice Date:":<20} {payment_info["invoice_date"]}')
+    print("The One Stop Insurance Company".rjust(40) + f'{"Invoice Date:":<20} {datetime.today().strftime("%Y-%m-%d")}')
     print("Car Insurance Policy Invoice".rjust(40) + f'{"Receipt No:":<20} #{insurance_info["invoice_num"]}')
     print()
 
     # Policy Holder Information
-    print(f'Policy Holder: {client_info["fname"]} {client_info["lname"]}')
+    print(f'Policy Holder: {title_case(client_info["fname"])} {title_case(client_info["lname"])}')
     print(f'Phone: {client_info["phone"]}')
-    print(f'Address: {client_info["address"]}')
-    print(f'{" " * 25}{client_info["city"]}, {client_info["province"]} {client_info["postal_code"]}')
+    print(f'Address: {title_case(client_info["address"])}')
+    print(f'{title_case(client_info["city"])}, {client_info["province"]} {client_info["postal_code"]}')
+    print()
+
+    # Coverage Inclusions
+    print("Coverage Inclusions:")
+    print(f'Number of Cars: {insurance_info["num_cars"]}')
+    print(f'Extra Liability: {validate_yn(insurance_info["extra_liability"])}')
+    print(f'Glass Coverage: {validate_yn(insurance_info["glass_coverage"])}')
+    print(f'Loaner Car Coverage: {validate_yn(insurance_info["loaner_car"])}')
     print()
 
     # Coverage Information
-    print("Coverage Inclusions:".rjust(40))
-    print(f'Number of Cars: {insurance_info["num_cars"]}')
-    print(f'Extra Liability: {convert_yn(insurance_info["extra_liability"])}')
-    print(f'Glass Coverage: {convert_yn(insurance_info["glass_coverage"])}')
-    print(f'Loaner Car Coverage: {convert_yn(insurance_info["loaner_car"])}')
+    print("Coverage Information:")
+    print(f'{"Extra Liability Price:":<40}${insurance_info["ex_liability_cost"]:.2f}')
+    print(f'{"Glass Coverage Price:":<40}${insurance_info["glass_cov_cost"]:.2f}')
+    print(f'{"Loaner Vehicle Payment:":<40}${insurance_info["loan_cov_cost"]:.2f}')
     print()
 
     # Premium Breakdown
-    print("Coverage Information:".rjust(40))
-    print(f'Extra Liability Price:  ${insurance_info["ex_liability_cost"]:.2f}')
-    print(f'Glass Coverage Price:   ${insurance_info["glass_cov_cost"]:.2f}')
-    print(f'Loaner Vehicle Payment: ${insurance_info["loan_cov_cost"]:.2f}')
-    print()
-
-    # Premium Breakdown (aligned to the right)
-    print("Premium Breakdown:".rjust(40))
+    print("Premium Breakdown:")
     print(f'{"Policy Premium:":<40}${insurance_info["total_premium"]:.2f}')
     print(f'{"HST (15%):":<40}${insurance_info["hst"]:.2f}')
     print(f'{"Total Cost:":<40}${insurance_info["total_cost"]:.2f}')
@@ -139,16 +144,15 @@ def display_receipt(client_info, insurance_info, payment_info, claims):
     print()
 
     # First Monthly Payment Date
-    print("First Monthly Payment Date:".rjust(40) + f'{payment_info["invoice_date"]}')
+    print("First Monthly Payment Date: " + f'{get_first_monthly_payment_date()}')
     print()
 
     # Claims Information
-    print("Previous Claims:".rjust(40))
+    print("Previous Claim Information:")
     print(f'{"Claim #":<12}{"Claim Date":<15}{"Amount":<15}')
     print("-" * 40)
-    for i in range(0, len(claims), 2):
-        claim_num = f'{i // 2 + 1}.'
-        print(f'{claim_num:<12}{claims[i]:<15}${claims[i + 1]:,.2f}')
+    for i, (claim_date, claim_amount) in enumerate(claims, start=1):
+        print(f'{i}. {claim_date:<15}${claim_amount:,.2f}')
     print("-" * 40)
 
 # Function to get client information
@@ -216,7 +220,7 @@ def get_insurance_info():
         "glass_cov_cost": num_cars * COST_GLASS_COVERAGE,
         "loan_cov_cost": num_cars * COST_LOANER_CAR_COVERAGE,
         "hst": hst,
-        "total_cost": total_cost  # Include the missing key
+        "total_cost": total_cost
     }
 
     NEXT_POLICY_NUMBER += 1
@@ -276,4 +280,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
